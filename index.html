@@ -1,47 +1,33 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <title>Lomba 17an RT.01</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Lomba HUT RI RT.01</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0f172a">
+  <link rel="apple-touch-icon" href="icon-192.png">
+
+  <style>
+    /* Hilangkan margin agar iframe full screen seperti aplikasi native */
+    body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #0f172a; }
+    iframe { width: 100%; height: 100%; border: none; display: block; }
+  </style>
 </head>
-<body class="bg-gray-100 p-8">
-    <div class="max-w-md mx-auto bg-white p-6 rounded-xl shadow-lg">
-        <h1 class="text-2xl font-bold mb-4">Pendaftaran Lomba</h1>
-        <div id="app" class="break-words text-sm text-gray-700">Memuat data...</div>
-    </div>
+<body>
 
-    <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbxQu_vjk6Oa73pA3Na5v5lqfE1jiLgTZVjwJShbCKwX8POx_xYESGl4ec8J_ow56oJM/exec";
+  <iframe src="https://script.google.com/macros/s/AKfycbxQu_vjk6Oa73pA3Na5v5lqfE1jiLgTZVjwJShbCKwX8POx_xYESGl4ec8J_ow56oJM/exec" allow="camera; microphone; fullscreen"></iframe>
 
-        async function init() {
-            try {
-                // 1. Ubah action menjadi getKategoriLomba agar sesuai dengan backend
-                const response = await fetch(`${API_URL}?action=getKategoriLomba`);
-                
-                // 2. Ambil teks mentahnya dulu untuk mencegah error jika yang direturn ternyata HTML
-                const textResponse = await response.text();
-                
-                try {
-                    // 3. Coba ubah teks menjadi JSON
-                    const json = JSON.parse(textResponse);
-                    
-                    if (json.status === 'success') {
-                        document.getElementById('app').innerHTML = "Berhasil! Data:<br>" + JSON.stringify(json.data);
-                    } else {
-                        document.getElementById('app').innerHTML = "Server merespons tapi ada error: " + json.message;
-                    }
-                } catch (parseError) {
-                    // Jika gagal jadi JSON, tampilkan teks aslinya untuk bahan pengecekan
-                    console.error("Bukan JSON. Response server:", textResponse);
-                    document.getElementById('app').innerHTML = "Error: Server tidak merespons dengan JSON. Cek console browser (F12).";
-                }
-                
-            } catch (err) {
-                document.getElementById('app').innerHTML = "Gagal terhubung: " + err.message;
-            }
-        }
-        init();
-    </script>
+  <script>
+    // Daftarkan Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => console.log('PWA Service Worker Aktif!'))
+          .catch(err => console.log('PWA Gagal:', err));
+      });
+    }
+  </script>
 </body>
 </html>
