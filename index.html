@@ -8,7 +8,7 @@
 <body class="bg-gray-100 p-8">
     <div class="max-w-md mx-auto bg-white p-6 rounded-xl shadow-lg">
         <h1 class="text-2xl font-bold mb-4">Pendaftaran Lomba</h1>
-        <div id="app">Memuat data...</div>
+        <div id="app" class="break-words text-sm text-gray-700">Memuat data...</div>
     </div>
 
     <script>
@@ -16,12 +16,29 @@
 
         async function init() {
             try {
-                // Fetch data dari Apps Script
-                const res = await fetch(`${API_URL}?action=getKategori`);
-                const json = await res.json();
-                document.getElementById('app').innerHTML = "Data berhasil dimuat!";
+                // 1. Ubah action menjadi getKategoriLomba agar sesuai dengan backend
+                const response = await fetch(`${API_URL}?action=getKategoriLomba`);
+                
+                // 2. Ambil teks mentahnya dulu untuk mencegah error jika yang direturn ternyata HTML
+                const textResponse = await response.text();
+                
+                try {
+                    // 3. Coba ubah teks menjadi JSON
+                    const json = JSON.parse(textResponse);
+                    
+                    if (json.status === 'success') {
+                        document.getElementById('app').innerHTML = "Berhasil! Data:<br>" + JSON.stringify(json.data);
+                    } else {
+                        document.getElementById('app').innerHTML = "Server merespons tapi ada error: " + json.message;
+                    }
+                } catch (parseError) {
+                    // Jika gagal jadi JSON, tampilkan teks aslinya untuk bahan pengecekan
+                    console.error("Bukan JSON. Response server:", textResponse);
+                    document.getElementById('app').innerHTML = "Error: Server tidak merespons dengan JSON. Cek console browser (F12).";
+                }
+                
             } catch (err) {
-                document.getElementById('app').innerHTML = "Error: " + err.message;
+                document.getElementById('app').innerHTML = "Gagal terhubung: " + err.message;
             }
         }
         init();
