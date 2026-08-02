@@ -1,4 +1,4 @@
-const CACHE_NAME = 'RT01-pwa-v1';
+const CACHE_NAME = 'rt01-pwa-v1';
 const urlsToCache = [ '/', '/index.html', '/manifest.json' ];
 
 self.addEventListener('install', event => {
